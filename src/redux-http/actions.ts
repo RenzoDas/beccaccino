@@ -2,6 +2,9 @@ export const REDUX_HTTP_CLIENT_REQUEST = '@@beccaccino/request';
 export const REDUX_HTTP_CLIENT_ERROR = '@@beccaccino/error';
 export const REDUX_HTTP_CLIENT_RESPONSE = '@@beccaccino/response';
 export const REDUX_HTTP_ACTION_SIGNATURE = Symbol('REDUX:BECCACCINO_ACTION');
+
+export const REDUX_HTTP_CLIENT_CLEAR = '@@beccaccino/clear';
+
 import { EndpointResponse } from '../endpoint';
 
 export type BindedRequestDetails = {

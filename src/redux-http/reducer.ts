@@ -3,6 +3,7 @@ import {
   REDUX_HTTP_CLIENT_RESPONSE,
   REDUX_HTTP_CLIENT_REQUEST,
   BindedActionResultPayload,
+  REDUX_HTTP_CLIENT_CLEAR,
 } from './actions';
 import { defaultSession } from '../Beccaccino';
 
@@ -18,9 +19,9 @@ export function beccaccinoReducer(
   state: any = initialState,
   action: BindedActionResultPayload,
 ): any {
+  const sessionId = action.requestDetails.sessionId || defaultSession;
   switch (action.type) {
     case REDUX_HTTP_CLIENT_REQUEST:
-      const sessionId = action.requestDetails.sessionId || defaultSession;
       const endpointMetadata =
         (state.requestsLog[sessionId] || {})[action.requestDetails.endpointName]
         || { requests: [] };
@@ -69,6 +70,35 @@ export function beccaccinoReducer(
           },
         },
       };
+      case REDUX_HTTP_CLIENT_CLEAR:
+        const { requestId, endpointName } = action.requestDetails;
+        const newResults = { ...state.results };
+        const newRequestsMetadata = { ...state.requestsMetadata };
+        
+        if (newResults[requestId]) {
+          delete newResults[requestId];
+        }
+        if (newRequestsMetadata[requestId]) {
+          delete newRequestsMetadata[requestId];
+        }
+        
+        return {
+          ...state,
+          results: newResults,
+          requestsMetadata: newRequestsMetadata,
+          requestsLog: {
+            ...state.requestsLog,
+            [sessionId]: {
+              ...state.requestsLog[sessionId],
+              [endpointName]: {
+                ...state.requestsLog[sessionId][endpointName],
+                requests: state.requestsLog[sessionId][endpointName].requests.filter(
+                  (id: string) => id !== requestId
+                ),
+              },
+            },
+          },
+        };
     default:
       return state;
   }

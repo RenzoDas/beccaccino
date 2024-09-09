@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { EndpointConfig, Endpoint, BindedAction } from './endpoint';
-import { REDUX_HTTP_ACTION_SIGNATURE, REDUX_HTTP_CLIENT_REQUEST } from './redux-http';
+import { REDUX_HTTP_ACTION_SIGNATURE, REDUX_HTTP_CLIENT_CLEAR, REDUX_HTTP_CLIENT_REQUEST } from './redux-http';
 import { v4 as uuid } from 'uuid';
 
 export type EndpointMap = {
@@ -65,5 +65,14 @@ export const beccaccino = (() => {
       if (!clientInstance) throw Error('Redux http client instance not configured');
       return clientInstance;
     },
+    clearAction: (endpointName: string, requestId: string, sessionId?: string) => ({
+      type: REDUX_HTTP_CLIENT_CLEAR,
+      requestDetails: {
+        endpointName,
+        requestId,
+        sessionId: sessionId || defaultSession,
+      },
+    }),
+    
   };
 })();
